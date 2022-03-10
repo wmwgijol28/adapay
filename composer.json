@@ -1,0 +1,27 @@
+{
+    "name": "wmwgijol28/adapay",
+    "description": "基于AdaPay官方SDK的composer包",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Wmwgijol28\\Adapay\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "wmwgijol28",
+            "email": "870108971@qq.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.1",
+        "workerman/workerman": "^3.5",
+        "workerman/mqtt": "^1.0",
+        "ext-mbstring": "*",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-openssl": "*"
+    }
+}
