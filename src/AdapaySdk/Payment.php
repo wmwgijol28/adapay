@@ -2,7 +2,7 @@
 namespace Djx\Adapay\AdaPaySdk;
 
 use Wmwgijol28\Adapay\AdapayCore\AdaPay;
-use Djx\Adapay\AdapaySdk\Utils\SDKTools;
+use Wmwgijol28\Adapay\AdapaySdk\Utils\SDKTools;
 
 
 class Payment extends AdaPay{

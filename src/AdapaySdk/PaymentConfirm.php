@@ -1,5 +1,5 @@
 <?php
-namespace Djx\Adapay\AdaPaySdk;
+namespace Wmwgijol28\Adapay\AdaPaySdk;
 use Wmwgijol28\Adapay\AdapayCore\AdaPay;
 
 class PaymentConfirm extends AdaPay

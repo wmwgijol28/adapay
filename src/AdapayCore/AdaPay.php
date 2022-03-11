@@ -1,4 +1,5 @@
 <?php
+
 namespace Wmwgijol28\Adapay\AdapayCore;
 
 use Wmwgijol28\Adapay\AdapayCore\utils\AdaRequests;
@@ -15,7 +16,7 @@ class AdaPay
     public static $header = array('Content-Type:application/json');
     public static $headerText = array('Content-Type:text/html');
     public static $headerEmpty = array('Content-Type:multipart/form-data');
-    public static $gateWayUrl = "";
+    public static $gateWayUrl = "https://api.adapay.tech";
     public static $gateWayType = "api";
     public static $mqttAddress = "post-cn-0pp18zowf0m.mqtt.aliyuncs.com:1883";
     public static $mqttInstanceId = "post-cn-0pp18zowf0m";
@@ -24,24 +25,34 @@ class AdaPay
 
     public static $isDebug;
     public static $logDir = "";
+    public static $sdk_version = "v1.2.1";
     public $postCharset = "utf-8";
     public $signType = "RSA2";
     public $ada_request = "";
     public $ada_tools = "";
-    public $statusCode= 200;
+    public $statusCode = 200;
     public $result = array();
 
     public function __construct()
     {
         $this->ada_request = new AdaRequests();
         $this->ada_tools = new AdaTools();
-        self::getGateWayUrl(self::$gateWayType);
+//        self::getGateWayUrl(self::$gateWayType);
         $this->__init_params();
     }
 
-    public static function init($config_info, $prod_mode="live", $is_object=false){
+    /**
+     * @param $config_info
+     * @param string $env_mode //test,prod
+     * @param string $prod_mode //test,live
+     * @param false $is_object
+     * @param false $is_debug
+     * @param string $logPath
+     */
+    public static function init($config_info, string $env_mode = "prod", string $prod_mode = "live", bool $is_object = false, bool $is_debug = false, string $logPath = "")
+    {
 
-        if (empty($config_info)){
+        if (empty($config_info)) {
             try {
                 throw new \Exception('缺少SDK配置信息');
             } catch (\Exception $e) {
@@ -49,10 +60,10 @@ class AdaPay
             }
         }
 
-        if ($is_object){
+        if ($is_object) {
             $config_obj = $config_info;
-        }else{
-            if (!file_exists($config_info)){
+        } else {
+            if (!file_exists($config_info)) {
                 try {
                     throw new \Exception('SDK配置文件不存在');
                 } catch (\Exception $e) {
@@ -60,68 +71,73 @@ class AdaPay
                 }
             }
             $cfg_file_str = file_get_contents($config_info);
-            $config_obj = json_decode($cfg_file_str,  true);
+            $config_obj = json_decode($cfg_file_str, true);
         }
 
-        $sdk_version = defined("SDK_VERSION") ? SDK_VERSION : "v1.0.0";
-        array_push(self::$header, "sdk_version:". $sdk_version);
-        array_push(self::$headerText, "sdk_version:". $sdk_version);
-        array_push(self::$headerEmpty, "sdk_version:". $sdk_version);
-        self::$isDebug = defined("DEBUG") ? DEBUG: false;
-        self::$logDir = defined("DEBUG") ? LOG: dirname(__FILE__)."/log";
-        $project_env =  defined("ENV") ? ENV : "prod";
-        self::init_mqtt($project_env);
+        array_push(self::$header, "sdk_version:" . self::$sdk_version);
+        array_push(self::$headerText, "sdk_version:" . self::$sdk_version);
+        array_push(self::$headerEmpty, "sdk_version:" . self::$sdk_version);
+        self::$isDebug = $is_debug;
+        self::$logDir = !empty($logPath) ? $logPath : dirname(__FILE__) . "/log";
+        self::init_mqtt($env_mode);
 
-        if ($prod_mode == 'live'){
-            self::$api_key =  isset($config_obj['api_key_live']) ? $config_obj['api_key_live'] : '';
+        if ($prod_mode == 'live') {
+            self::$api_key = $config_obj['api_key_live'] ?? '';
         }
-        if ( $prod_mode == 'test'){
-            self::$api_key = isset($config_obj['api_key_test']) ? $config_obj['api_key_test'] : '';
+        if ($prod_mode == 'test') {
+            self::$api_key = $config_obj['api_key_test'] ?? '';
         }
 
-        if (isset($config_obj['rsa_public_key']) && $config_obj['rsa_public_key']){
+        if (isset($config_obj['rsa_public_key']) && $config_obj['rsa_public_key']) {
             self::$rsaPublicKey = $config_obj['rsa_public_key'];
         }
 
-        if (isset($config_obj['rsa_private_key']) && $config_obj['rsa_private_key']){
+        if (isset($config_obj['rsa_private_key']) && $config_obj['rsa_private_key']) {
             self::$rsaPrivateKey = $config_obj['rsa_private_key'];
         }
     }
 
-    public static function getGateWayUrl($type){
-        self::$gateWayUrl =  defined("GATE_WAY_URL") ? sprintf(GATE_WAY_URL, $type) : "https://api.adapay.tech";
+//    public static function getGateWayUrl($type)
+//    {
+//        self::$gateWayUrl = defined("GATE_WAY_URL") ? sprintf(GATE_WAY_URL, $type) : "https://api.adapay.tech";
+//    }
+
+    public static function setApiKey($api_key)
+    {
+        self::$api_key = $api_key;
     }
 
-    public static function setApiKey($api_key){
-        self::$api_key =$api_key;
-    }
-
-    public static function setRsaPublicKey($pub_key){
+    public static function setRsaPublicKey($pub_key)
+    {
         self::$rsaPublicKey = $pub_key;
     }
 
-    protected function __init_params(){
+    protected function __init_params()
+    {
         $this->ada_tools->rsaPrivateKey = self::$rsaPrivateKey;
         $this->ada_tools->rsaPublicKey = self::$rsaPublicKey;
     }
 
-    protected function get_request_header($req_url, $post_data, $header=array()){
-        array_push($header, 'Authorization:'.self::$api_key);
-        array_push($header, 'Signature:'.$this->ada_tools->generateSignature($req_url, $post_data));
+    protected function get_request_header($req_url, $post_data, $header = array())
+    {
+        array_push($header, 'Authorization:' . self::$api_key);
+        array_push($header, 'Signature:' . $this->ada_tools->generateSignature($req_url, $post_data));
         return $header;
     }
 
-    protected function handleResult(){
+    protected function handleResult()
+    {
         $json_result_data = json_decode($this->result[1], true);
-        if (isset($json_result_data['data'])){
+        if (isset($json_result_data['data'])) {
             return json_decode($json_result_data['data'], true);
         }
         return [];
     }
 
 
-    protected function do_empty_data($req_params){
-        $req_params = array_filter($req_params, function($v){
+    protected function do_empty_data($req_params)
+    {
+        $req_params = array_filter($req_params, function ($v) {
             if (!empty($v) || $v == '0') {
                 return true;
             }
@@ -130,26 +146,28 @@ class AdaPay
         return $req_params;
     }
 
-    public static function writeLog($message, $level = "INFO"){
-        if (self::$isDebug){
-            if (!is_dir(self::$logDir)){
+    public static function writeLog($message, $level = "INFO")
+    {
+        if (self::$isDebug) {
+            if (!is_dir(self::$logDir)) {
                 mkdir(self::$logDir, 0777, true);
             }
 
-            $log_file = self::$logDir."/adapay_".date("Ymd").".log";
+            $log_file = self::$logDir . "/adapay_" . date("Ymd") . ".log";
             $server_addr = "127.0.0.1";
-            if (isset($_SERVER["REMOTE_ADDR"])){
+            if (isset($_SERVER["REMOTE_ADDR"])) {
                 $server_addr = $_SERVER["REMOTE_ADDR"];
             }
-            $message_format = "[". $level ."] [".gmdate("Y-m-d\TH:i:s\Z")."] ". $server_addr." ". $message. "\n";
+            $message_format = "[" . $level . "] [" . gmdate("Y-m-d\TH:i:s\Z") . "] " . $server_addr . " " . $message . "\n";
             $fp = fopen($log_file, "a+");
             fwrite($fp, $message_format);
             fclose($fp);
         }
     }
 
-    public static function init_mqtt($project_env){
-        if (isset($project_env) && $project_env == "test"){
+    public static function init_mqtt($project_env)
+    {
+        if (isset($project_env) && $project_env == "test") {
             self::$mqttAddress = "post-cn-459180sgc02.mqtt.aliyuncs.com:1883";
             self::$mqttGroupId = "GID_CRHS_ASYN";
             self::$mqttInstanceId = "post-cn-459180sgc02";
@@ -157,8 +175,9 @@ class AdaPay
         }
     }
 
-    public function isError(){
-        if (empty( $this->result )){
+    public function isError()
+    {
+        if (empty($this->result)) {
             return true;
         }
         $this->statusCode = $this->result[0];
@@ -167,24 +186,24 @@ class AdaPay
         $resp_data = isset($resp_arr['data']) ? $resp_arr['data'] : '';
         $resp_sign = isset($resp_arr['signature']) ? $resp_arr['signature'] : '';
         $resp_data_decode = json_decode($resp_data, true);
-        if ($resp_sign && $this->statusCode != 401){
-            if ($this->ada_tools->verifySign($resp_sign, $resp_data)){
-                if ($this->statusCode != 200){
+        if ($resp_sign && $this->statusCode != 401) {
+            if ($this->ada_tools->verifySign($resp_sign, $resp_data)) {
+                if ($this->statusCode != 200) {
                     $this->result = $resp_data_decode;
                     return true;
-                }else{
+                } else {
                     $this->result = $resp_data_decode;
                     return false;
                 }
-            }else{
+            } else {
                 $this->result = [
-                    'failure_code'=> 'resp_sign_verify_failed',
-                    'failure_msg'=> '接口结果返回签名验证失败',
-                    'status'=> 'failed'
+                    'failure_code' => 'resp_sign_verify_failed',
+                    'failure_msg' => '接口结果返回签名验证失败',
+                    'status' => 'failed'
                 ];
                 return true;
             }
-        }else{
+        } else {
             $this->result = $resp_arr;
             return true;
         }
