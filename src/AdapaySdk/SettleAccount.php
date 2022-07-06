@@ -28,7 +28,7 @@ class SettleAccount extends AdaPay
     public function balance($params=array()){
         ksort($params);
         $request_params = $this->do_empty_data($params);
-        $req_url =  self::$gateWayUrl . $this->endpoint . "/balance";
+        $req_url =  $this->gateWayUrl . $this->endpoint . "/balance";
         $header = $this->get_request_header($req_url, http_build_query($request_params), self::$headerText);
         $this->result =  $this->ada_request->curl_request($req_url . "?" . http_build_query($request_params), "", $header, false);
         // $this->result = $this->sdk_tools->get($params, $this->endpoint."/balance");
@@ -37,7 +37,7 @@ class SettleAccount extends AdaPay
     public function create($params=array()){
         $request_params = $params;
         $request_params = $this->do_empty_data($request_params);
-        $req_url = self::$gateWayUrl.$this->endpoint;
+        $req_url = $this->gateWayUrl.$this->endpoint;
         $header =  $this->get_request_header($req_url, $request_params, self::$header);
         $this->result = $this->ada_request->curl_request($req_url, $request_params, $header, $is_json=true);
         // $this->result = $this->sdk_tools->post($params, $this->endpoint);
@@ -48,7 +48,7 @@ class SettleAccount extends AdaPay
         $settle_account_id = isset($params['settle_account_id']) ? $params['settle_account_id']: '';
         ksort($request_params);
         $request_params = $this->do_empty_data($request_params);
-        $req_url = self::$gateWayUrl.$this->endpoint."/" . $settle_account_id;
+        $req_url = $this->gateWayUrl.$this->endpoint."/" . $settle_account_id;
         $header = $this->get_request_header($req_url, http_build_query($request_params), self::$headerText);
         $this->result = $this->ada_request->curl_request($req_url."?".http_build_query($request_params), "", $header, false);
         // $this->result = $this->sdk_tools->get($params, $this->endpoint."/" . $settle_account_id);
@@ -57,7 +57,7 @@ class SettleAccount extends AdaPay
     public function delete($params=array()){
         $request_params = $params;
         $request_params = $this->do_empty_data($request_params);
-        $req_url = self::$gateWayUrl.$this->endpoint."/delete";
+        $req_url = $this->gateWayUrl.$this->endpoint."/delete";
         $header = $this->get_request_header($req_url, $request_params, self::$header);
         $this->result = $this->ada_request->curl_request($req_url, $request_params, $header, $is_json=true);
         // $this->result = $this->sdk_tools->post($params, $this->endpoint."/delete");
@@ -67,7 +67,7 @@ class SettleAccount extends AdaPay
         $request_params = $params;
         ksort($request_params);
         $request_params = $this->do_empty_data($request_params);
-        $req_url = self::$gateWayUrl.$this->endpoint."/settle_details";
+        $req_url = $this->gateWayUrl.$this->endpoint."/settle_details";
         $header = $this->get_request_header($req_url, http_build_query($request_params), self::$headerText);
         $this->result = $this->ada_request->curl_request($req_url."?".http_build_query($request_params), "", $header, false);
         // $this->result = $this->sdk_tools->get($params, $this->endpoint."/settle_details");
@@ -76,7 +76,7 @@ class SettleAccount extends AdaPay
     public function update($params=array()){
         $request_params = $params;
         $request_params = $this->do_empty_data($request_params);
-        $req_url = self::$gateWayUrl.$this->endpoint."/modify";
+        $req_url = $this->gateWayUrl.$this->endpoint."/modify";
         $header =  $this->get_request_header($req_url, $request_params, self::$header);
         $this->result = $this->ada_request->curl_request($req_url, $request_params, $header, $is_json=true);
         // $this->result = $this->sdk_tools->post($params, $this->endpoint."/modify");

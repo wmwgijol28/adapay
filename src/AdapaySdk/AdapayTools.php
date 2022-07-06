@@ -20,7 +20,7 @@ class AdapayTools extends AdaPay
         $params['bill_date'] = $bill_date;
         $request_params = $params;
         $request_params = $this->do_empty_data($request_params);
-        $req_url = AdaPay::$gateWayUrl . $this->endpoint;
+        $req_url = $this->gateWayUrl . $this->endpoint;
         $header =  $this->get_request_header($req_url, $request_params, AdaPay::$header);
         $this->result = $this->ada_request->curl_request($req_url, $request_params, $header, $is_json=true);
         // $this->result = $this->sdk_tools->post($params, $this->endpoint);
@@ -29,7 +29,7 @@ class AdapayTools extends AdaPay
     public function unionUserId($params=array()){
         $request_params = $params;
         $request_params = $this->do_empty_data($request_params);
-        $req_url =  self::$gateWayUrl . $this->union_endpoint;
+        $req_url =  $this->gateWayUrl . $this->union_endpoint;
         $header =  $this->get_request_header($req_url, $request_params, self::$header);
         $this->result = $this->ada_request->curl_request($req_url, $request_params, $header, $is_json=true);
         // $this->result = $this->sdk_tools->post($params, $this->union_endpoint);

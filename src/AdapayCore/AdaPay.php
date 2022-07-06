@@ -16,8 +16,8 @@ class AdaPay
     public static $header = array('Content-Type:application/json');
     public static $headerText = array('Content-Type:text/html');
     public static $headerEmpty = array('Content-Type:multipart/form-data');
-    public static $gateWayUrl = "https://api.adapay.tech";
-    public static $gateWayType = "api";
+    public $gateWayUrl = "https://%s.adapay.tech";
+    public $gateWayType = "api";
     public static $mqttAddress = "post-cn-0pp18zowf0m.mqtt.aliyuncs.com:1883";
     public static $mqttInstanceId = "post-cn-0pp18zowf0m";
     public static $mqttGroupId = "GID_CRHS_ASYN";
@@ -25,7 +25,7 @@ class AdaPay
 
     public static $isDebug;
     public static $logDir = "";
-    public static $sdk_version = "v1.2.1";
+    public static $sdk_version = "v1.4.3";
     public $postCharset = "utf-8";
     public $signType = "RSA2";
     public $ada_request = "";
@@ -37,7 +37,7 @@ class AdaPay
     {
         $this->ada_request = new AdaRequests();
         $this->ada_tools = new AdaTools();
-//        self::getGateWayUrl(self::$gateWayType);
+        self::getGateWayUrl($this->gateWayType);
         $this->__init_params();
     }
 
@@ -97,10 +97,10 @@ class AdaPay
         }
     }
 
-//    public static function getGateWayUrl($type)
-//    {
-//        self::$gateWayUrl = defined("GATE_WAY_URL") ? sprintf(GATE_WAY_URL, $type) : "https://api.adapay.tech";
-//    }
+    public function getGateWayUrl($type)
+    {
+        $this->gateWayUrl = sprintf($this->gateWayUrl, $type);
+    }
 
     public static function setApiKey($api_key)
     {

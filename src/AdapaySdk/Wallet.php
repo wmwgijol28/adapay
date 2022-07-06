@@ -11,7 +11,7 @@ class Wallet extends AdaPay
 
     public function __construct()
     {
-        self::$gateWayType = "page";
+        $this->gateWayType = "page";
         parent::__construct();
         // $this->sdk_tools = SDKTools::getInstance();
     }
@@ -27,7 +27,7 @@ class Wallet extends AdaPay
     public function login($params=array()){
         $request_params = $params;
         $request_params = $this->do_empty_data($request_params);
-        $req_url =  self::$gateWayUrl .$this->endpoint;
+        $req_url =  $this->gateWayUrl .$this->endpoint;
         $header =  $this->get_request_header($req_url, $request_params, self::$header);
         $this->result = $this->ada_request->curl_request($req_url, $request_params, $header, $is_json=true);
         // $this->result = $this->sdk_tools->post($params, $this->endpoint);

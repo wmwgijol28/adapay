@@ -24,7 +24,7 @@ class PaymentConfirm extends AdaPay
      */
     public function create($params=array()){
         $request_params = $this->do_empty_data($params);
-        $req_url =  self::$gateWayUrl .$this->endpoint."/confirm";
+        $req_url =  $this->gateWayUrl .$this->endpoint."/confirm";
         $header =  $this->get_request_header($req_url, $request_params, self::$header);
         $this->result =  $this->ada_request->curl_request($req_url, $request_params, $header, $is_json=true);
         // $this->result = $this->sdk_tools->post($params, $this->endpoint."/confirm");
@@ -40,7 +40,7 @@ class PaymentConfirm extends AdaPay
      */
     public function query($params=array()){
         $request_params = $params;
-        $req_url =  self::$gateWayUrl . $this->endpoint ."/confirm/" . $params['payment_confirm_id'];
+        $req_url =  $this->gateWayUrl . $this->endpoint ."/confirm/" . $params['payment_confirm_id'];
         $header = $this->get_request_header($req_url, http_build_query($request_params), self::$headerText);
         $this->result = $this->ada_request->curl_request($req_url . "?" . http_build_query($request_params), "", $header, false);
         // $this->result = $this->sdk_tools->get($params, $this->endpoint."/confirm/" . $params['payment_confirm_id']);
@@ -57,7 +57,7 @@ class PaymentConfirm extends AdaPay
     public function queryList($params=array()){
         ksort($params);
         $request_params = $this->do_empty_data($params);
-        $req_url =  self::$gateWayUrl . $this->endpoint."/confirm/list" ;
+        $req_url =  $this->gateWayUrl . $this->endpoint."/confirm/list" ;
         $header = $this->get_request_header($req_url, http_build_query($request_params), self::$headerText);
         $this->result = $this->ada_request->curl_request($req_url . "?" . http_build_query($request_params), "", $header, false);
         // $this->result = $this->sdk_tools->get($params, $this->endpoint."/confirm/list");

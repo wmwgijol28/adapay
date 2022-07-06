@@ -21,7 +21,7 @@ class Member extends AdaPay
     public function create($params=array()){
         $request_params = $params;
         $request_params = $this->do_empty_data($request_params);
-        $req_url =  self::$gateWayUrl . $this->endpoint;
+        $req_url =  $this->gateWayUrl . $this->endpoint;
         $header =  $this->get_request_header($req_url, $request_params, self::$header);
         $this->result = $this->ada_request->curl_request($req_url, $request_params, $header, $is_json=true);
         // $this->result = $this->sdk_tools->post($params, $this->endpoint);
@@ -31,7 +31,7 @@ class Member extends AdaPay
         $request_params = $params;
         ksort($request_params);
         $request_params = $this->do_empty_data($request_params);
-        $req_url =  self::$gateWayUrl . $this->endpoint . "/" . $request_params['member_id'];
+        $req_url =  $this->gateWayUrl . $this->endpoint . "/" . $request_params['member_id'];
         $header = $this->get_request_header($req_url, http_build_query($request_params), self::$headerText);
         $this->result = $this->ada_request->curl_request($req_url . "?" . http_build_query($request_params), "", $header, false);
         // $this->result = $this->sdk_tools->get($params, $this->endpoint. "/" . $params['member_id']);
@@ -40,7 +40,7 @@ class Member extends AdaPay
     public function update($params=array()){
         $request_params = $params;
         $request_params = $this->do_empty_data($request_params);
-        $req_url =  self::$gateWayUrl . $this->endpoint . '/update';
+        $req_url =  $this->gateWayUrl . $this->endpoint . '/update';
         $header =  $this->get_request_header($req_url, $request_params, self::$header);
         $this->result = $this->ada_request->curl_request($req_url, $request_params, $header, $is_json=true);
         // $this->result = $this->sdk_tools->post($params, $this->endpoint."/update");
@@ -48,7 +48,7 @@ class Member extends AdaPay
 
     public function queryList($params=array()){
         $request_params = $params;
-        $req_url =  self::$gateWayUrl . $this->endpoint . "/list";
+        $req_url =  $this->gateWayUrl . $this->endpoint . "/list";
         $header = $this->get_request_header($req_url, http_build_query($request_params), self::$headerText);
         $this->result = $this->ada_request->curl_request($req_url . "?" . http_build_query($request_params), "", $header, false);
         // $this->result = $this->sdk_tools->get($params, $this->endpoint."/list");

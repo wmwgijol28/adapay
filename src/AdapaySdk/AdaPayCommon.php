@@ -24,8 +24,8 @@ class AdaPayCommon extends AdaPay
 
         $adapayApiVersion = isset($requestParams['adapay_api_version']) ? $requestParams['adapay_api_version'] : 'v1';
 
-        self::getGateWayUrl(self::$gateWayType);
-        return  self::$gateWayUrl . "/" . $adapayApiVersion . "/" . str_replace(".", "/",$adapayFuncCode);
+        $this->getGateWayUrl($this->gateWayType);
+        return  $this->gateWayUrl . "/" . $adapayApiVersion . "/" . str_replace(".", "/",$adapayFuncCode);
     }
 
     /**
@@ -54,7 +54,7 @@ class AdaPayCommon extends AdaPay
      * @param $merchantKey
      */
     public function requestAdapayUits($params=array(), $merchantKey="") {
-        self::$gateWayType = "page";
+        $this->gateWayType = "page";
 
         if (!empty($merchantKey)) {
             self::$rsaPrivateKey = $merchantKey;
@@ -92,7 +92,7 @@ class AdaPayCommon extends AdaPay
     }
 
     public function queryAdapayUits($params=array(), $merchantKey="") {
-        self::$gateWayType = "page";
+        $this->gateWayType = "page";
 
         if (!empty($merchantKey)) {
             self::$rsaPrivateKey = $merchantKey;

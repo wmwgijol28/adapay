@@ -27,7 +27,7 @@ class Refund extends AdaPay
         $request_params = $params;
         $charge_id = isset($params['payment_id']) ? $params['payment_id'] : '';
         $request_params = $this->do_empty_data($request_params);
-        $req_url = self::$gateWayUrl .$this->endpoint."/". $charge_id. "/refunds";
+        $req_url = $this->gateWayUrl .$this->endpoint."/". $charge_id. "/refunds";
         $header =  $this->get_request_header($req_url, $request_params, self::$header);
         $this->result = $this->ada_request->curl_request($req_url, $request_params, $header, $is_json=true);
         // $this->result = $this->sdk_tools->post($params, $this->endpoint."/". $charge_id. "/refunds");
@@ -44,7 +44,7 @@ class Refund extends AdaPay
     public function query($params=array()){
         $request_params = $params;
         $request_params = $this->do_empty_data($request_params);
-        $req_url = self::$gateWayUrl .$this->endpoint."/refunds";
+        $req_url = $this->gateWayUrl .$this->endpoint."/refunds";
         $header = $this->get_request_header($req_url, http_build_query($request_params), self::$headerText);
         $this->result = $this->ada_request->curl_request($req_url."?".http_build_query($request_params), "", $header, false);
         // $this->result = $this->sdk_tools->get($params, $this->endpoint."/refunds");
