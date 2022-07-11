@@ -1,6 +1,6 @@
 <?php
 
-namespace Wmwgijol28\Adapay\AdaPaySdk;
+namespace Wmwgijol28\Adapay\AdapaySdk;
 use Wmwgijol28\Adapay\AdapayCore\AdaPay;
 
 class Member extends AdaPay
