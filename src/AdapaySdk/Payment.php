@@ -1,5 +1,5 @@
 <?php
-namespace Djx\Adapay\AdapaySdk;
+namespace Wmwgijol28\Adapay\AdapaySdk;
 
 use Wmwgijol28\Adapay\AdapayCore\AdaPay;
 use Wmwgijol28\Adapay\AdapaySdk\Utils\SDKTools;
