@@ -65,7 +65,7 @@ class AdaPayCommon extends AdaPay
         $req_url =  $this->packageRequestUrl($request_params);
         $request_params = $this->format_request_params($request_params);
 
-        echo $req_url;
+//        echo $req_url;
 
         $header =  $this->get_request_header($req_url, $request_params, self::$header);
         $this->result = $this->ada_request->curl_request($req_url, $request_params, $header, $is_json=true);
