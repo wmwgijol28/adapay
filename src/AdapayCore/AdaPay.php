@@ -74,9 +74,9 @@ class AdaPay
             $config_obj = json_decode($cfg_file_str, true);
         }
 
-        array_push(self::$header, "sdk_version:" . self::$sdk_version);
-        array_push(self::$headerText, "sdk_version:" . self::$sdk_version);
-        array_push(self::$headerEmpty, "sdk_version:" . self::$sdk_version);
+        self::$header['sdk_version'] = self::$sdk_version;
+        self::$headerText['sdk_version'] = self::$sdk_version;
+        self::$headerEmpty['sdk_version'] = self::$sdk_version;
         self::$isDebug = $is_debug;
         self::$logDir = !empty($logPath) ? $logPath : dirname(__FILE__) . "/log";
         self::init_mqtt($env_mode);
